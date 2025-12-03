@@ -1,3 +1,4 @@
+#4cd
 #4ab
 import numpy as np 
 import matplotlib.pyplot as plt
@@ -34,7 +35,7 @@ def check_family_happiness(L, i, j, f_types):
         return 0  # Empty house, no happiness to evaluate.
     
     if me == C:
-        if np.any(neighborhood == A) or np.any(neighborhood == B):
+        if np.any(neighborhood == A) and np.any(neighborhood == B):
             return 1  # happy C family.
         else:
             return -1  # Unhappy C family.
@@ -114,6 +115,7 @@ def simulate(seed):
     step = 0
     np.random.seed(seed)
     while not stable and step < max_step:
+        print(step)
         time.append(step)
         moves_this_step = 0
 
@@ -175,7 +177,7 @@ plt.imshow(L0, cmap=cmap, norm=norm)
 plt.title('Initial town, scenario A')
 
 plt.subplot(2, 2, 2)
-plt.imshow(L1, cmap=cmap)
+plt.imshow(L1, cmap=cmap, norm=norm)
 plt.title('Initial town, scenario B')
 
 plt.subplot(2, 2, 3)
