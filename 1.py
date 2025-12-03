@@ -1,5 +1,7 @@
 import numpy as np 
 import matplotlib.pyplot as plt
+
+np.random.seed(42)
     
 def prisoner_dilemma(Nr, T, R, P, S, na, nb):
     """

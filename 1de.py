@@ -1,5 +1,7 @@
 import numpy as np 
 import matplotlib.pyplot as plt
+
+np.random.seed(42)
     
 def prisoner_dilemma(Nr, T, R, P, S, na, nb):
     """
@@ -39,76 +41,6 @@ def prisoner_dilemma(Nr, T, R, P, S, na, nb):
             punishment_A = punishment_defector
     
     return punishment_A, punishment_B
-
-
-
-def lattice_turn(L, Nr, T, R, P, S, mu):
-    """
-    Function to simulate the outcome of a prisoner's dilemma game 
-    over Nr rounds on a lattice (i.e., over one turn).
-    
-    Parameters
-    ==========
-    L : Lattice. Contains the current strategies.
-    Nr : Total number of rounds.
-    T : Punishment for defecting prisoner (partner non-defecting).
-    R : Punishment for both prisoners, both non defecting.
-    P : Punishment for both prisoners, both defecting.
-    S : Punishment for non-defecting prisoner (partner defecting).
-    """
-    
-    Lx, Ly = L.shape
-    game_scores = np.zeros([Lx, Ly])  # Saves the scores each round.
-        
-    Ln = np.zeros([Lx, Ly])  # New strategies.
-    
-    # Competition.
-    for i in range(Lx):
-        for j in range(Ly):
-            # Game with neighbour below.
-            pa, pb = prisoner_dilemma(Nr, T, R, P, S, 
-                                      int(L[i, j]), 
-                                      int(L[i, (j + 1) % Ly]))
-            game_scores[i, j] += pa
-            game_scores[i, (j + 1) % Ly] += pb
-            
-            # Game with neighbour to the right.
-            pa, pb = prisoner_dilemma(Nr, T, R, P, S, 
-                                      int(L[i, j]), 
-                                      int(L[(i + 1) % Lx, j]))
-            game_scores[i, j] += pa
-            game_scores[(i + 1) % Lx, j] += pb
-
-    # Revision.
-    for i in range(Lx):
-        for j in range(Ly):
-            # Check the neighbors' scores.
-            best_strategy = np.argsort([game_scores[i, j], 
-                                        game_scores[i, (j + 1) % Ly],
-                                        game_scores[(i + 1) % Lx, j],
-                                        game_scores[i, (j - 1) % Ly],
-                                        game_scores[(i - 1) % Lx, j]])
-            
-            if best_strategy[0] == 0:
-                Ln[i, j] = L[i, j]
-            elif best_strategy[0] == 1:
-                Ln[i, j] = L[i, (j + 1) % Ly]
-            elif best_strategy[0] == 2:
-                Ln[i, j] = L[(i + 1) % Lx, j]
-            elif best_strategy[0] == 3:
-                Ln[i, j] = L[i, (j - 1) % Ly]
-            else: # best_strategy[0] == 4:
-                Ln[i, j] = L[(i - 1) % Lx, j]
-    
-    # Mutation.
-    if mu > 0:
-        p = np.random.rand(Lx, Ly)
-        mutants = np.where(p < mu)
-        for i in range(len(mutants)):
-            Ln[mutants[0][i], mutants[1][i]] = np.random.randint(Nr + 1)
-    
-    return Ln
-
 
 def lattice_turn_mod(L, Nr, T, R, P, S, mu):
     """
@@ -224,7 +156,7 @@ N_rep = 8
 C_all_mod = []
 fig_mod, axes_mod = plt.subplots(2, N_rep, figsize=(3*N_rep, 8))
 for rep in range(N_rep):
-    print(f"Part 2 - rep {rep}")
+    print(f"Pt2-rep {rep}")
     # Initialize the strategies at random, 0 and Nr and values in between.
     L = np.random.randint(Nr + 1, size=(L_side, L_side)) 
     L_init = L.copy()
